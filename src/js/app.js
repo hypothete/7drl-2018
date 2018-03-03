@@ -4,20 +4,22 @@ if (!ROT.isSupported()) {
     // Good to go!
 }
 
-var game = new Game(32, 24);
+var game = new Game(20, 18);
 game.init();
 
-//ROT.RNG.setSeed(1234);
+ROT.RNG.setSeed(1234);
 
 function Game (w,h) {
   let display,
     player,
-    map = new Map('start', 32, 24),
+    world = new World(w, h),
     scheduler = new ROT.Scheduler.Simple(),
     engine = new ROT.Engine(scheduler);
   let game = {
+    mapIndex: 0,
     init,
-    drawMap
+    drawMap,
+    getActiveMap
   };
   return game;
 
@@ -38,11 +40,12 @@ function Game (w,h) {
       .then(() => {
         new WebGLazy({
           background: 'white',
-          scaleMode: WebGLazy.SCALE_MODES.MULTIPLES,
-          source: display.getElement()
+          scaleMode: WebGLazy.SCALE_MODES.FIT,
+          source: display.getElement(),
+          allowDownscaling: true
         });
 
-        generateMap();
+        world.generate();
         generatePotions();
         createPlayer('tumblr');
         engine.start();
@@ -50,28 +53,23 @@ function Game (w,h) {
       })
   }
 
-  function generateMap () {
-    let self = this;
-    let mpp = new ROT.Map.Cellular(w, h);
-    mpp.randomize(0.5);
-    for (let j=0; j<3; j++) {
-      mpp.create(function(x, y, wall) {
-        map.setTile(x, y, wall ? '.' : '#');
-      });
-    }
-  }
-
   function drawMap () {
-    display.drawMap('pkmn', map);
+    let activeMap = game.getActiveMap();
+    display.drawMap('pkmn', activeMap);
     if (player) {
       player.draw();
     }
   }
 
+  function getActiveMap () {
+    return world.getMap(game.mapIndex);
+  }
+
   function generatePotions () {
-    for (let i=0; i<10; i++) {
-      let randTile = map.getRandomFloor();
-      map.addItem(
+    let activeMap = game.getActiveMap();
+    for (let i=0; i<3; i++) {
+      let randTile = activeMap.getRandomFloor();
+      activeMap.addItem(
         {
           name: 'potion',
           char: '*',
@@ -84,7 +82,8 @@ function Game (w,h) {
   }
 
   function createPlayer (name) {
-    let floor = map.getRandomFloor();
+    let activeMap = game.getActiveMap();
+    let floor = activeMap.getRandomFloor();
     player = new Player(name, floor.x, floor.y);
     scheduler.add(player, true);
   }
@@ -120,15 +119,21 @@ function Game (w,h) {
       let dir = ROT.DIRS[4][keyDir];
       if (typeof dir !== 'undefined') {
         let newPos = [player.x + dir[0], player.y + dir[1]];
-        if (map.inMap(newPos[0], newPos[1])){
-          let mapTile = map.getTile(newPos[0], newPos[1]);
-          if (mapTile === '.') {
+        let activeMap = game.getActiveMap();
+        if (activeMap.inMap(newPos[0], newPos[1])){
+          let newTile = activeMap.check(newPos[0], newPos[1]);
+          if (newTile.tile === '.' && newTile.monsters.length === 0) {
             player.x += dir[0];
             player.y += dir[1];
+            game.drawMap();
+            if (newTile.items.length) {
+              itemList = newTile.items.map(item => item.item.name).join(', ');
+              display.drawText (
+                itemList, 1, h-5, w-2, 4, 'white', '16px Impact', 'black');
+            }
           }
         }
       }
-      game.drawMap();
       window.removeEventListener('keyup', player);
       engine.unlock();
     }

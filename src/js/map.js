@@ -50,6 +50,7 @@ function Map (name, width, height) {
 
   function check (x, y) {
     let info = {
+      tile: getTile(x,y),
       items: items.filter(item => {
         return item.x === x && item.y === y;
       }),
@@ -62,11 +63,11 @@ function Map (name, width, height) {
 
   function getRandomFloor () {
     // returns a random open tile's coords
-    let rx = Math.random() * width | 0;
-    let ry = Math.random() * height | 0;
+    let rx = ROT.RNG.getUniform() * width | 0;
+    let ry = ROT.RNG.getUniform() * height | 0;
     while (tiles[rx][ry] !== '.') {
-      rx = Math.random() * width | 0;
-      ry = Math.random() * height | 0;
+      rx = ROT.RNG.getUniform() * width | 0;
+      ry = ROT.RNG.getUniform() * height | 0;
     }
     return { x: rx, y: ry };
   }

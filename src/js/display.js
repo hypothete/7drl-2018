@@ -100,8 +100,8 @@ function Display (selector, gridWidth, gridHeight, tileWidth, tileHeight) {
     ctx.fillStyle = textCol;
     ctx.fillText(
       text,
-      gridX * tileWidth,
-      gridY * tileHeight,
+      (gridX+1) * tileWidth,
+      (gridY+1) * tileHeight,
       tileWidth * textWidth
     );
   }
