@@ -133,6 +133,24 @@ function Game (w,h) {
             }
           }
         }
+        else {
+          // we might be walking offscreen to the next map
+          if (newPos[1] < 0) {
+            // going up a map
+            player.y = h-1;
+            game.mapIndex ++;
+            game.drawMap();
+          }
+          else if (newPos[1] >= h) {
+            // going down
+            player.y = 0;
+            game.mapIndex --;
+            game.drawMap();
+          }
+          else {
+            console.error('Tried to walk off the map!')
+          }
+        }
       }
       window.removeEventListener('keyup', player);
       engine.unlock();

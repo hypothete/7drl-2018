@@ -14,10 +14,13 @@ function World (mapWidth, mapHeight) {
       mpp.randomize(0.5);
       for (let j=0; j<3; j++) {
         mpp.create(function(x, y, wall) {
-          map.setTile(x, y, wall ? '#' : '.');
-          if (x === 0 || y === 0 || x == mapWidth-1 || y == mapHeight-1) {
-            map.setTile(x, y, '#');
+          if (y === 0 || y === mapHeight-1) {
+            wall = false;
           }
+          if (x === 0 || x == mapWidth-1 ) {
+            wall = true;
+          }
+          map.setTile(x, y, wall ? '#' : '.');
         });
       }
     }
