@@ -58,8 +58,7 @@ function Player (name, game, x, y) {
           game.drawMap();
           if (newTile.items.length) {
             itemList = newTile.items.map(item => item.item.name).join(', ');
-            game.display.drawTextbox (
-              'items here: ' + itemList, 'white', '16px Monospace', 'black');
+            game.display.drawTextbox ('items here: ' + itemList);
           }
         }
       }
@@ -95,8 +94,7 @@ function Player (name, game, x, y) {
         if (typeof poppedItem === 'undefined') break;
         activeMap.addItem(poppedItem, player.x, player.y);
         getActiveTile();
-        game.display.drawTextbox (
-          'dropped ' + poppedItem.name, 'white', '16px Monospace', 'black');
+        game.display.drawTextbox('dropped ' + poppedItem.name);
         break;
         case 5:
         game.drawMap();
@@ -110,8 +108,7 @@ function Player (name, game, x, y) {
           inventory.push(pickedItem);
           getActiveTile();
           game.drawMap();
-          game.display.drawTextbox (
-            'picked up ' + pickedItem.name, 'white', '16px Monospace', 'black');
+          game.display.drawTextbox ('picked up ' + pickedItem.name);
         }
         break;
       }

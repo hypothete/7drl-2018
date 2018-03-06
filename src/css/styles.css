@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Zig";
+  src: url("./zig.woff") format("woff");
+}
+
+#preload {
+  opacity: 0.01;
+  position: absolute;
+}

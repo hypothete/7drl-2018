@@ -138,7 +138,7 @@ function Display (selector, gridWidth, gridHeight, tileWidth, tileHeight) {
   }
 
   function drawTextbox(text, textCol, font, bgCol) {
-    return drawText (text, 1, gridHeight-3, gridWidth-2, 2, textCol, font, bgCol);
+    return drawText (text, 1, gridHeight-3, gridWidth-2, 2, 'white', '18px Zig', 'black');
   }
 
   function getElement () {
