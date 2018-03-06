@@ -25,8 +25,10 @@ function Map (name, width, height) {
     getMonsters,
     addItem,
     removeItem,
+    pickItem,
     addMonster,
-    removeMonster
+    removeMonster,
+    getSize
   };
 
   function inMap (x, y) {
@@ -84,6 +86,18 @@ function Map (name, width, height) {
     items.push({ item, x, y });
   }
 
+  function pickItem (x, y) {
+    let pickedItem = items.find(someItem => {
+      return someItem.x == x && someItem.y == y;
+    });
+    if (typeof pickedItem === 'undefined') {
+      console.log('item not found in tile');
+      return;
+    }
+    removeItem(pickedItem);
+    return pickedItem.item;
+  }
+
   function removeItem (item) {
     let itemIndex = items.findIndex(someItem => {
       return item === someItem;
@@ -108,5 +122,9 @@ function Map (name, width, height) {
       return;
     }
     monsters.splice(monsterIndex, 1);
+  }
+
+  function getSize () {
+    return [width, height];
   }
 }

@@ -11,7 +11,7 @@ function World (mapWidth, mapHeight) {
       let map = new Map('start', mapWidth, mapHeight);
       maps.push(map);
       let mpp = new ROT.Map.Cellular(mapWidth, mapHeight);
-      mpp.randomize(0.5);
+      mpp.randomize(0.55);
       for (let j=0; j<3; j++) {
         mpp.create(function(x, y, wall) {
           if (y === 0 || y === mapHeight-1) {
