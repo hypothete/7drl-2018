@@ -1,6 +1,7 @@
 function Display (selector, gridWidth, gridHeight, tileWidth, tileHeight) {
 
   let tilesets = {};
+  let animIntervals = {};
 
   let can = document.querySelector(selector);
   if (!can) {
@@ -16,6 +17,8 @@ function Display (selector, gridWidth, gridHeight, tileWidth, tileHeight) {
     drawMap,
     drawTile,
     drawText,
+    drawTextbox,
+    drawAnimation,
     getElement
   };
 
@@ -84,6 +87,34 @@ function Display (selector, gridWidth, gridHeight, tileWidth, tileHeight) {
     );
   }
 
+  function drawAnimation (tilesetName, sourceY, gridX, gridY) {
+
+    animIntervals[tilesetName] = animIntervals[tilesetName] || {};
+    let tileset = tilesets[tilesetName];
+    if (typeof tileset === 'undefined') {
+      console.error('couldn\'t load tileset ' + tilesetName);
+      return;
+    }
+    if (animIntervals[tilesetName][sourceY]){
+      clearInterval(animIntervals[tilesetName][sourceY]);
+    }
+    animIntervals[tilesetName][sourceY] = setInterval(function () {
+      let timestamp = (Date.now()/200)%(tileset.image.width/tileWidth) | 0;
+      let xOffset = tileWidth * timestamp;
+      ctx.drawImage(
+        tileset.image,
+        xOffset,
+        sourceY * tileHeight,
+        tileWidth,
+        tileHeight,
+        gridX * tileWidth,
+        gridY * tileHeight,
+        tileWidth,
+        tileHeight
+      );
+    }, 60);
+  }
+
   function drawText (text, gridX, gridY, textWidth, textHeight, textCol, font, bgCol) {
     if (typeof bgCol !== 'undefined') {
       ctx.fillStyle = bgCol;
@@ -104,6 +135,10 @@ function Display (selector, gridWidth, gridHeight, tileWidth, tileHeight) {
       (gridY+1) * tileHeight,
       tileWidth * textWidth
     );
+  }
+
+  function drawTextbox(text, textCol, font, bgCol) {
+    return drawText (text, 1, gridHeight-3, gridWidth-2, 2, textCol, font, bgCol);
   }
 
   function getElement () {
