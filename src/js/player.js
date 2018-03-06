@@ -59,7 +59,7 @@ function Player (name, game, x, y) {
           if (newTile.items.length) {
             itemList = newTile.items.map(item => item.item.name).join(', ');
             game.display.drawTextbox (
-              itemList, 'white', '16px Monospace', 'black');
+              'items here: ' + itemList, 'white', '16px Monospace', 'black');
           }
         }
       }
@@ -92,6 +92,7 @@ function Player (name, game, x, y) {
         case 4:
         // drop item
         let poppedItem = inventory.pop();
+        if (typeof poppedItem === 'undefined') break;
         activeMap.addItem(poppedItem, player.x, player.y);
         getActiveTile();
         game.display.drawTextbox (
@@ -105,6 +106,7 @@ function Player (name, game, x, y) {
         // picks up one item
         if (activeTile) {
           let pickedItem = activeMap.pickItem(player.x, player.y);
+          if (typeof pickedItem === 'undefined') break;
           inventory.push(pickedItem);
           getActiveTile();
           game.drawMap();
